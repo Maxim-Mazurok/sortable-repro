@@ -21,12 +21,12 @@ export const App = defineComponent({
 
     return () => (
       <div>
-        <ItemsRepro items={items.value} />
+        <ItemsRepro v-model:items={items.value} />
         <hr />
         <div>Current source: {JSON.stringify(items.value, null, 2)}</div>
         <button onClick={appendItem5}>Append item 5</button>
         <hr />
-        <ItemsFixed v-model:items={items.value} onItemUpdate={onItemUpdate} />
+        <ItemsFixed items={items.value} onItemUpdate={onItemUpdate} />
       </div>
     );
   },
