@@ -1,32 +1,37 @@
-import { moveArrayElement } from "@vueuse/integrations/useSortable";
-import { defineComponent, nextTick, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { ItemsRepro } from "./ItemsRepro";
-import { ItemsFixed } from "./ItemsFixed";
 
 export const App = defineComponent({
   name: "App",
   setup() {
-    const items = ref(["11111", "22222", "33333", "44444"]);
+    const serverItems = ref(["11111", "22222", "33333", "44444"]);
+    const items = computed(() => serverItems.value);
 
     const appendItem5 = () => {
-      items.value.push("55555");
-    };
-
-    const onItemUpdate = (e) => {
-      moveArrayElement(items.value, e.oldIndex, e.newIndex);
-      nextTick(() => {
-        console.log("Maybe send new order to the server:", items.value);
-      });
+      setTimeout(() => {
+        serverItems.value.push("55555");
+      }, 1000);
     };
 
     return () => (
       <div>
-        <ItemsRepro v-model:items={items.value} />
+        <ItemsRepro
+          items={items.value}
+          onUpdate:items={(newItems) => {
+            // Do not update value optimistically
+
+            // Instead, update value after server responds (simulating server response with timeout)
+            setTimeout(() => {
+              serverItems.value = newItems;
+            }, 3000);
+          }}
+        />
         <hr />
-        <div>Current source: {JSON.stringify(items.value, null, 2)}</div>
+        <div>Current items: {JSON.stringify(items.value, null, 2)}</div>
+        <div>
+          Current server items: {JSON.stringify(serverItems.value, null, 2)}
+        </div>
         <button onClick={appendItem5}>Append item 5</button>
-        <hr />
-        <ItemsFixed items={items.value} onItemUpdate={onItemUpdate} />
       </div>
     );
   },
