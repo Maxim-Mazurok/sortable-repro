@@ -32,7 +32,7 @@ export const ItemsRepro = defineComponent({
         <h1>Drag us:</h1>
         <ul ref={el}>
           {items.value.map((item) => (
-            <li>{item}</li>
+            <li key={item}>{item}</li>
           ))}
         </ul>
       </div>
