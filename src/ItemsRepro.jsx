@@ -9,12 +9,17 @@ export const ItemsRepro = defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     let el = ref(null);
 
-    const items = computed(() => [...props.items]);
+    const items = computed({
+      get: () => props.items,
+      set: (value) => {
+        emit("update:items", value);
+      },
+    });
 
-    useSortable(el, items.value);
+    useSortable(el, items);
 
     return () => (
       <div>
@@ -27,7 +32,7 @@ export const ItemsRepro = defineComponent({
         <h1>Drag us:</h1>
         <ul ref={el}>
           {items.value.map((item) => (
-            <li>{item}</li>
+            <li key={item}>{item}</li>
           ))}
         </ul>
       </div>
